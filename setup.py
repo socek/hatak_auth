@@ -10,7 +10,7 @@ install_requires = [
 if __name__ == '__main__':
     setup(
         name='Hatak_Auth',
-        version='0.1',
+        version='0.1.1',
         description='Auth plugin for Hatak.',
         license='Apache License 2.0',
         packages=find_packages('src'),

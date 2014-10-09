@@ -4,18 +4,23 @@ import os
 from haplugin.sql import Base
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import declared_attr
 
 from .db_tables import users_2_permissions
 
 
-class User(Base):
+class BaseUser(object):
+
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
     email = Column(String, unique=True)
     password = Column(String(128))
-    permissions = relationship("Permission", secondary=users_2_permissions)
+
+    @declared_attr
+    def permissions(cls):
+        return relationship("Permission", secondary=users_2_permissions)
 
     def add_permission(self, db, group, name):
         permission = Permission.get_or_create(
@@ -61,12 +66,20 @@ class User(Base):
         return True
 
 
-class Permission(Base):
+class User(BaseUser, Base):
+    pass
+
+
+class BasePermission(object):
     __tablename__ = 'permissions'
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
     group = Column(String)
+
+
+class Permission(BasePermission, Base):
+    pass
 
 
 class NotLoggedUser(User):
