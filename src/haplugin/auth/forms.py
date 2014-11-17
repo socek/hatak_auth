@@ -1,4 +1,3 @@
-from formskit import Field
 from formskit.formvalidators import FormValidator
 from formskit.validators import NotEmpty
 
@@ -7,7 +6,7 @@ from haplugin.formskit import PostForm
 
 class EmailMustExists(FormValidator):
 
-    message = "Email i/lub hasło są nieprawidłowe."
+    message = "EmailMustExists"
 
     def validate(self):
         db = self.form.db
@@ -19,26 +18,28 @@ class EmailMustExists(FormValidator):
         return not user is None
 
 
+class PasswordMustMatch(FormValidator):
+
+    message = "PasswordMustMatch"
+
+    def validate(self):
+        data = self.form.get_data_dict(True)
+        user_cls = self.form.request.user_cls
+        db = self.form.request.db
+        self.user = (
+            db.query(user_cls).filter_by(email=data['email']).one()
+        )
+        return self.user.validate_password(data['password'])
+
+
 class LoginForm(PostForm):
 
-    def createForm(self):
-        self.addField(
-            Field('email', label='E-mail', validators=[NotEmpty()]))
-        self.addField(
-            Field('password', label='Hasło', validators=[NotEmpty()]))
+    def create_form(self):
+        self.add_field('email', label='E-mail', validators=[NotEmpty()])
+        self.add_field('password', label='Hasło', validators=[NotEmpty()])
 
-        self.addFormValidator(EmailMustExists())
+        self.add_form_validator(EmailMustExists())
+        self.add_form_validator(PasswordMustMatch())
 
-    def overalValidation(self, data):
-        user_cls = self.request.user_cls
-        self.user = (
-            self.db.query(user_cls).filter_by(email=data['email'][0]).one()
-        )
-        if self.user.validate_password(data['password'][0]):
-            return True
-        else:
-            self.message = "Email i/lub hasło są nieprawidłowe."
-            return False
-
-    def submit(self, data):
+    def submit(self):
         self.session['user_id'] = self.user.id
