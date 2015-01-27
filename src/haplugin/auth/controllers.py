@@ -14,7 +14,7 @@ class LoginController(Controller):
             return
 
         form = self.add_form(LoginForm, widget=LoginFormWidget)
-        if form() is True:
+        if form.validate() is True:
             self.redirect(self.settings['auth_redirect'])
 
 
