@@ -13,9 +13,8 @@ class EmailMustExists(FormValidator):
 
         email = self.form.get_value('email')
         user_cls = self.form.request.user_cls
-        user = db.query(user_cls).filter_by(email=email).first()
-        self.form.user = user
-        return not user is None
+        self.form.user = db.query(user_cls).filter_by(email=email).first()
+        return self.form.user is not None
 
 
 class PasswordMustMatch(FormValidator):
@@ -23,11 +22,8 @@ class PasswordMustMatch(FormValidator):
     message = "PasswordMustMatch"
 
     def validate(self):
-        if self.form.user:
-            data = self.form.get_data_dict(True)
-            return self.form.user.validate_password(data['password'])
-        else:
-            return True
+        data = self.form.get_data_dict(True)
+        return self.form.user.validate_password(data['password'])
 
 
 class LoginForm(PostForm):
