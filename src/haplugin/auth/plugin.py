@@ -7,6 +7,7 @@ from haplugin.jinja2 import Jinja2Plugin
 from haplugin.sql import SqlPlugin
 
 from .models import User, NotLoggedUser
+from .driver import AuthDriver
 
 
 class AuthPlugin(Plugin):
@@ -41,6 +42,9 @@ class AuthPlugin(Plugin):
     def validate_plugin(self):
         self.app._validate_dependency_plugin(Jinja2Plugin)
         self.app._validate_dependency_plugin(SqlPlugin)
+
+    def generate_drivers(self, sql):
+        sql.add_group(AuthDriver(self.User))
 
 
 class UserRequestPlugin(RequestPlugin):

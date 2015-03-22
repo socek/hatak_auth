@@ -2,6 +2,7 @@ from formskit.formvalidators import FormValidator
 from formskit.validators import NotEmpty
 
 from haplugin.formskit import PostForm
+from hatak.unpackrequest import unpack
 
 
 class EmailMustExists(FormValidator):
@@ -9,11 +10,9 @@ class EmailMustExists(FormValidator):
     message = "EmailMustExists"
 
     def validate(self):
-        db = self.form.db
-
+        unpack(self, self.form.request)
         email = self.form.get_value('email')
-        user_cls = self.form.request.user_cls
-        self.form._user = db.query(user_cls).filter_by(email=email).first()
+        self.form._user = self.driver.Auth.get_by_email(email)
         return self.form._user is not None
 
 
