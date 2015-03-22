@@ -51,7 +51,10 @@ class UserRequestPlugin(RequestPlugin):
     def return_once(self):
         user_id = self.request.session.get('user_id', None)
         if user_id:
-            return self.parent.User.get_by_id(self.request.db, user_id)
+            try:
+                return self.parent.User.get_by_id(self.request.db, user_id)
+            except:
+                return self.parent.NotLoggedUser()
         else:
             return self.parent.NotLoggedUser()
 
