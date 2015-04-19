@@ -9,6 +9,24 @@ from sqlalchemy.ext.declarative import declared_attr
 from .db_tables import users_2_permissions
 
 
+class BasePermission(object):
+    __tablename__ = 'permissions'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    group = Column(String)
+
+    def __repr__(self):
+        data = super().__repr__()
+        name = self.name or ''
+        group = self.group or ''
+        return '%s: %s:%s' % (data, name, group)
+
+
+class Permission(BasePermission, Base):
+    pass
+
+
 class BaseUser(object):
 
     __tablename__ = 'users'
@@ -17,17 +35,11 @@ class BaseUser(object):
     name = Column(String)
     email = Column(String, unique=True)
     password = Column(String(128))
+    _permission_cls = Permission
 
     @declared_attr
     def permissions(cls):
         return relationship("Permission", secondary=users_2_permissions)
-
-    def add_permission(self, db, group, name):
-        permission = Permission.get_or_create(
-            db,
-            name=name,
-            group=group)
-        self.permissions.append(permission)
 
     def has_permission(self, group, name):
         for permission in self.permissions:
@@ -65,20 +77,14 @@ class BaseUser(object):
     def is_logged(self):
         return True
 
+    def __repr__(self):
+        data = super().__repr__()
+        name = self.name or ''
+        email = self.email or ''
+        return '%s: %s (%s)' % (data, name, email)
+
 
 class User(BaseUser, Base):
-    pass
-
-
-class BasePermission(object):
-    __tablename__ = 'permissions'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    group = Column(String)
-
-
-class Permission(BasePermission, Base):
     pass
 
 
