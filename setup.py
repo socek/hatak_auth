@@ -4,14 +4,14 @@ from setuptools import setup, find_packages
 install_requires = [
     'hatak>=0.2.7.8',
     'Hatak_Formskit>=0.2.3.1',
-    'Hatak_Sql>=0.1.11',
+    'Hatak_Sql>=0.1.15',
     'Hatak_Jinja2',
 ]
 
 if __name__ == '__main__':
     setup(
         name='Hatak_Auth',
-        version='0.2.2.2',
+        version='0.2.3',
         description='Auth plugin for Hatak.',
         license='Apache License 2.0',
         packages=find_packages('src'),

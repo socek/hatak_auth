@@ -56,11 +56,10 @@ class UserRequestPlugin(RequestPlugin):
         user_id = self.request.session.get('user_id', None)
         if user_id:
             try:
-                return self.parent.User.get_by_id(self.request.db, user_id)
+                return self.driver.Auth.get_by_id(user_id)
             except:
-                return self.parent.NotLoggedUser()
-        else:
-            return self.parent.NotLoggedUser()
+                pass
+        return self.parent.NotLoggedUser()
 
 
 class UserClassRequestPlugin(RequestPlugin):
