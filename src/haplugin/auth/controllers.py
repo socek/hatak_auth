@@ -16,6 +16,12 @@ class LoginController(Controller):
         form = self.add_form(LoginForm, widget=LoginFormWidget)
         if form.validate() is True:
             self.redirect(self.settings['auth_redirect'])
+            return
+
+        self.data['login_header'] = self.settings.get(
+            'login_header',
+            'Hatak Auth'
+        )
 
 
 class ForbiddenController(Controller):

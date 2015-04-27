@@ -16,8 +16,6 @@ class AuthDriver(SqlDriver):
 
     def create(
         self,
-        name=None,
-        email=None,
         password=None,
         permissions=None,
         **kwargs
