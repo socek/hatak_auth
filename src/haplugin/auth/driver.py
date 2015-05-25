@@ -38,6 +38,12 @@ class AuthDriver(SqlDriver):
         permission = self.get_or_create_permission(group, name)
         user.permissions.append(permission)
 
+    def remove_permission(self, user, group, name):
+        for permission in user.permissions:
+            if permission.group == group and permission.name == name:
+                user.permissions.remove(permission)
+                return
+
     def get_or_create_permission(self, group, name):
         try:
             return (
