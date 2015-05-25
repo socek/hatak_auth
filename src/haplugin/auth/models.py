@@ -22,6 +22,11 @@ class BasePermission(object):
         group = self.group or ''
         return '%s: %s:%s' % (data, name, group)
 
+    def to_str(self):
+        name = self.name or ''
+        group = self.group or ''
+        return '%s:%s' % (group, name)
+
 
 class Permission(BasePermission, Base):
     pass
